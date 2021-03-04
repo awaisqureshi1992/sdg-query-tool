@@ -1,0 +1,51 @@
+{% extends "sdg_site/base.html" %}
+{% load static %}
+{% block content %}
+<h1 class="h3 mb-3">UN SDG Data Query</h1>
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <h5 class="card-title mb-0">Make Initial Selections</h5>
+            <form method="POST" action="">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <div class="card-body">
+                    <div class="mb-3">
+                        Select Goal
+                        <select name="dropdown_goal" class="form-control select2" data-toggle="select2">
+                            {% if n > 1 %} <option selected="selected"> {{ goallist }} </option> {% endif %}
+                            {% for i, r in goallist.iterrows %}
+                            <option>"{{ r.title }}"</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% if n > 1 %}
+                    <div class="mb-3">
+                        Select Indicator
+                        <select name="dropdown_indicator" class="form-control select2" data-toggle="select2">
+                            {% for i in indicatorlist %}
+                            <option>"{{ i }}"</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    {% endif %}
+                    {% if n < 2 %} <div class="card-body text-end">
+                        <div class="mb-3">
+                            <button class="btn btn-primary">Next</button>
+                        </div>
+                </div>
+                {% endif %}
+                {% if n == 2 %}
+                <div class="card-body text-end">
+                    <div class="mb-3">
+<!--                         <button class="btn btn-primary", name='query'>Submit</button>
+ -->                        <input  class="btn btn-primary", type="submit" value="Select", name="query">
+                    </div>
+                </div>
+                {% endif %}
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
