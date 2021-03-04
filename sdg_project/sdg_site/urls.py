@@ -5,5 +5,5 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('', views.home, name='sdg-home'),
-    path('index/', views.index, name='sdg-index'),
+    path('tables/', views.tables, name='sdg-tables'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

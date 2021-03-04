@@ -29,25 +29,16 @@ def indicator(goal):
     return(indicator)
 
 
-
-
-        # url_i = "https://unstats.un.org/SDGAPI/v1/sdg/Indicator/List"
- #    response_i = requests.get(url_i)
- #    norm_i = pandas.json_normalize(response_i.json())
-
- #    norm_i["key"] = norm_i["code"] + '|' + norm_i["description"]
- #    norm_i["goal_code"] = norm_i["goal"]
- #    norm_i = norm_i[["goal_code", "key"]]
-
- #    result = pandas.merge(norm_i, norm_g, how="left", on=["goal_code"])
- #    result = result[["title", "key"]]
-
- #    result = result.groupby('title')['key'].apply(
- #        list).reset_index(name='indicator')
-
-
- #    ls = []
- #    for index, row in result.iterrows():
- #        val = row['title'] + " : ['" + "', '".join(row['indicator']) + "'],"
- #        ls.append(val)
-indicator("End poverty in all its forms everywhere")
+def datatable(indicator):
+    url = "https://unstats.un.org/SDGAPI/v1/sdg/Indicator/List"
+    response = requests.get(url)
+    norm = pandas.json_normalize(response.json())
+    indicator = norm.loc[norm["description"] == indicator]["code"]
+    size=100
+    for i in indicator:
+        ind=i
+    url = "https://unstats.un.org/SDGAPI/v1/sdg/Indicator/Data?indicator=" + str(ind) + "&pageSize=" + str(size)
+    response = requests.get(url)
+    norm = pandas.json_normalize(response.json()["data"])
+    norm = norm [["geoAreaCode","geoAreaName","timePeriodStart","value","valueType","source"]]
+    return(norm)
