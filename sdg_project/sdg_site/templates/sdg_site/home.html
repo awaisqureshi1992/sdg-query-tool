@@ -15,7 +15,7 @@
                         <select name="dropdown_goal" class="form-control select2" data-toggle="select2">
                             {% if n > 1 %} <option selected="selected"> {{ goallist }} </option> {% endif %}
                             {% for i, r in goallist.iterrows %}
-                            <option>"{{ r.title }}"</option>
+                            <option value="{{ r.key }}">"{{ r.title }}"</option>
                             {% endfor %}
                         </select>
                     </div>
@@ -23,8 +23,8 @@
                     <div class="mb-3">
                         Select Indicator
                         <select name="dropdown_indicator" class="form-control select2" data-toggle="select2">
-                            {% for i in indicatorlist %}
-                            <option>"{{ i }}"</option>
+                            {% for i, r in indicatorlist.iterrows %}
+                            <option value="{{ r.key }}">"{{ r.description }}"</option>
                             {% endfor %}
                         </select>
                     </div>

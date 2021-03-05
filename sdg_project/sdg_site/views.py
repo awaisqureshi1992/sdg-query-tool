@@ -1,7 +1,5 @@
 from django.shortcuts import render
 from . import starter
-import pandas
-import requests
 # Create your views here.
 
 
@@ -16,16 +14,19 @@ def home(request):
 
     if request.method == 'POST' and 'goal' in request.POST:
         gls = request.POST.get("dropdown_goal")
-        gls = gls.replace('"', "")
-        ind = starter.indicator(gls)
+        result = starter.indicator(gls)
+        ind = result[0]
+        gls = result[1]
         return render(request, 'sdg_site/home.html', {'goallist': gls, 'indicatorlist': ind, 'n': 2})
 
     if request.method == 'POST' and 'indicator' in request.POST:
         gls = request.POST.get("dropdown_goal")
         ind = request.POST.get("dropdown_indicator")
-        ind = ind.replace('"', "")
-        df=starter.datatable(ind)
-        return render(request, 'sdg_site/tables.html', {'df': df})
+        result = starter.datatable(ind, gls)
+        df = result[0]
+        ind = result[1]
+        gls = result[2]
+        return render(request, 'sdg_site/tables.html', {'df': df, 'indicatorlist': ind, 'goallist': gls})
 
 
 def tables(request):

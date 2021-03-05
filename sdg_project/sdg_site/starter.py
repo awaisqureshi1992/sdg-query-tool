@@ -3,42 +3,39 @@ import requests
 
 def goal():
 
-    url_g = "https://unstats.un.org/SDGAPI/v1/sdg/Goal/List"
-    response_g = requests.get(url_g)
-    norm_g = pandas.json_normalize(response_g.json())
-    norm_g["goal_code"] = norm_g["code"]
-
-    norm_g = norm_g[["goal_code", "title"]]
-    gls = norm_g[["title"]]
+    url = "https://unstats.un.org/SDGAPI/v1/sdg/Goal/List"
+    response = requests.get(url)
+    norm = pandas.json_normalize(response.json())
+    norm["key"] = norm["code"] + "|" + norm["title"]
+    gls = norm[["title", "key"]]
 
     return(gls)
 
 
 def indicator(goal):
-
-    url_g = "https://unstats.un.org/SDGAPI/v1/sdg/Goal/List"
-    response_g = requests.get(url_g)
-    norm = pandas.json_normalize(response_g.json())
-    code = norm.loc[norm["title"] == goal]["code"]
-    x = (str(code[0]))
+    goal_code = goal.split('|')[0]
+    goal = goal.split('|')[1]
     url = "https://unstats.un.org/SDGAPI/v1/sdg/Indicator/List"
     response = requests.get(url)
     norm = pandas.json_normalize(response.json())
-    indicator = norm.loc[norm["goal"] == x]["description"]
+    indicator = norm.loc[norm["goal"] == str(goal_code)]
+    indicator["key"] = indicator["code"] + "|" + indicator["description"]
+    indicator = indicator[["description", "key"]]
+    return(indicator, goal)
 
-    return(indicator)
 
-
-def datatable(indicator):
-    url = "https://unstats.un.org/SDGAPI/v1/sdg/Indicator/List"
-    response = requests.get(url)
-    norm = pandas.json_normalize(response.json())
-    indicator = norm.loc[norm["description"] == indicator]["code"]
-    size=100
-    for i in indicator:
-        ind=i
-    url = "https://unstats.un.org/SDGAPI/v1/sdg/Indicator/Data?indicator=" + str(ind) + "&pageSize=" + str(size)
+def datatable(indicator, goal):
+    ind = indicator.split('|')[0]
+    indicatorlist = indicator.split('|')[1]
+    size = 100
+    url = "https://unstats.un.org/SDGAPI/v1/sdg/Indicator/Data?indicator=" + \
+        str(ind) + "&pageSize=" + str(size)
     response = requests.get(url)
     norm = pandas.json_normalize(response.json()["data"])
-    norm = norm [["geoAreaCode","geoAreaName","timePeriodStart","value","valueType","source"]]
-    return(norm)
+    norm = norm[["geoAreaCode", "geoAreaName",
+                 "timePeriodStart", "value", "valueType", "source"]]
+    return(norm, indicatorlist, goal)
+
+
+# indicator("End poverty in all its forms everywhere")
+# print(indicator("1|End poverty in all its forms everywhere")[1])
