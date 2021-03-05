@@ -2,11 +2,6 @@ from django.shortcuts import render
 from . import starter
 # Create your views here.
 
-
-def index(request):
-    return render(request, 'sdg_site/index.html')
-
-
 def home(request):
     if request.method == 'GET':
         gls = starter.goal()
